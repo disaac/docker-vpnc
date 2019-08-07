@@ -1,0 +1,25 @@
+version: '3'
+services:
+ vpnc:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: disaac/vpnc:${BUILDTAG:-latest}
+  cap_add:
+    - NET_ADMIN
+  restart: unless-stopped
+  # devices:
+  #   - /dev/net/tun
+  ports:
+    - "${VPNC_PROXY_PORT:-8899}:8899"
+    - "${VPNC_SSHD_PORT:-2299}:22"
+  sysctls:
+    - net.ipv6.conf.all.disable_ipv6=1
+  environment:
+    - VPNC_GATEWAY=${VPNC_GATEWAY}
+    - VPNC_ID=${VPNC_ID}
+    - VPNC_SECRET=${VPNC_SECRET}
+    - VPNC_USERNAME=${VPNC_USERNAME}
+    - VPNC_PASSWORD=${VPNC_PASSWORD}
+    - VPNC_SSHD_AUTHORIZED_KEYS=${VPNC_SSHD_AUTHORIZED_KEYS}
+    - CREATE_TUN_DEVICE=${CREATE_TUN_DEVICE:-true}
